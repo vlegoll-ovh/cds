@@ -212,8 +212,8 @@ func UpdateCapabilities(ctx context.Context, db gorp.SqlExecutor, spawnArgs hatc
 		if _, err := db.Exec(query, spawnArgs.Model.ID, strings.Join(capaToDelete, ","), string(sdk.BinaryRequirement)); err != nil {
 			//Ignore errors because we let the database to check constraints...
 			log.Warning(ctx, "registerWorker> Cannot delete from worker_capability: %v", err)
-			return sdk.WithStack(err)
 
+			return sdk.WithStack(err)
 		}
 	}
 
