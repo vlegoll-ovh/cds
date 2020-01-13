@@ -117,9 +117,9 @@ test: test-config clean
 
 test-coverage: $(GO_COV_MERGE) $(TARGET_DIR) $(GO_COBERTURA)
 	@echo "Generating unit tests coverage..."
-	@$(GO_COV_MERGE) `find ./ -name "*.coverprofile"` > $(TARGET_DIR)/cover.out
-	@$(GO_COBERTURA) < $(TARGET_DIR)/cover.out > $(TARGET_DIR)/coverage.xml
-	@go tool cover -html=$(TARGET_DIR)/cover.out -o=$(TARGET_DIR)/cover.html
+	time $(GO_COV_MERGE) `find ./ -name "*.coverprofile"` > $(TARGET_DIR)/cover.out
+	time $(GO_COBERTURA) < $(TARGET_DIR)/cover.out > $(TARGET_DIR)/coverage.xml
+	time go tool cover -html=$(TARGET_DIR)/cover.out -o=$(TARGET_DIR)/cover.html
 	@if [ ! -z "${CDS_VERSION}" ]; then \
 		echo "Sending coverage report to CDS"; \
 		worker upload --tag "${CDS_VERSION}" $(abspath $(TARGET_DIR)/cover.html); \

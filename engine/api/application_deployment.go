@@ -23,9 +23,7 @@ func (api *API) getApplicationDeploymentStrategiesConfigHandler() service.Handle
 		app, err := application.LoadByName(api.mustDB(), api.Cache, key, appName, application.LoadOptions.WithDeploymentStrategies)
 		if err != nil {
 			return sdk.WrapError(err, "getApplicationDeploymentStrategiesConfigHandler")
-
 		}
-
 		return service.WriteJSON(w, app.DeploymentStrategies, http.StatusOK)
 	}
 }
