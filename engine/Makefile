@@ -144,7 +144,7 @@ test-xunit-report: $(GO_GOJUNIT) $(TARGET_DIR)
 						worker upload --tag `echo $$TST | sed 's|./||' | sed 's|./||' | sed 's|/|_|g') | sed 's|_tests.log||'` $(abspath $$TST); \
 					fi; \
 					echo "Generating xUnit report \t$$TST.xml"; \
-					cat $$TST | $(GO_GOJUNIT) > $$TST.xml; \
+					time cat $$TST | $(GO_GOJUNIT) > $$TST.xml; \
 				fi; \
 			fi; \
 		else \
