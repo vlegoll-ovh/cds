@@ -13,7 +13,7 @@ TARGET_ARCH = $(if ${ARCH},${ARCH},amd64 arm 386 arm64)
 
 GO_BUILD = go build
 GO_COV_MERGE = ${GOPATH}/bin/gocovmerge
-GO_GOJUNIT = ${GOPATH}/bin/go-junit-report
+GO_GOJUNIT = ${HOME}/junit-report-converter
 GO_COBERTURA = ${GOPATH}/bin/gocover-cobertura
 
 PKGS_COMMA_SEP = go list -f '{{ join .Deps "\n" }}' . | grep github.com/ovh/cds | grep -v vendor | tr '\n' ',' | sed 's/,$$//'
@@ -42,7 +42,8 @@ $(GO_COV_MERGE):
 	go get -u github.com/wadey/gocovmerge
 
 $(GO_GOJUNIT):
-	go get -u github.com/jstemmer/go-junit-report
+	curl -s https://dl.plik.ovh/file/oaGabgFKjpx5iDyK/I7OatzLwXIMAwI3N/junit-report-converter > ${HOME}/junit-report-converter
+	chmod +x ${HOME}/junit-report-converter
 
 $(GO_COBERTURA):
 	go get -u github.com/t-yuki/gocover-cobertura
