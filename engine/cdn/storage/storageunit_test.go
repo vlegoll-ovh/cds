@@ -13,6 +13,7 @@ import (
 	"github.com/ovh/symmecrypt/ciphers/aesgcm"
 	"github.com/ovh/symmecrypt/convergent"
 
+	"github.com/ovh/cds/engine/api/database/gorpmapping"
 	"github.com/ovh/cds/engine/api/test"
 	commontest "github.com/ovh/cds/engine/test"
 
@@ -91,27 +92,30 @@ func TestRun(t *testing.T) {
 	apiRefHash, err := index.ComputeApiRef(apiRef)
 	require.NoError(t, err)
 
-	i := index.Item{
+	i := &index.Item{
 		ID:         sdk.UUID(),
 		ApiRef:     apiRef,
 		ApiRefHash: apiRefHash,
 		Created:    time.Now(),
 	}
-	require.NoError(t, index.InsertItem(ctx, m, db, &i))
-	require.NoError(t, cdnUnits.Buffer.Add(i, 1.0, "this is the first log"))
-	require.NoError(t, cdnUnits.Buffer.Add(i, 1.0, "this is the second log"))
+	require.NoError(t, index.InsertItem(ctx, m, db, i))
+	require.NoError(t, cdnUnits.Buffer.Add(*i, 1.0, "this is the first log"))
+	require.NoError(t, cdnUnits.Buffer.Add(*i, 1.0, "this is the second log"))
 
 	redisUnit, err := storage.LoadUnitByName(ctx, m, db, "redis_buffer")
 	require.NoError(t, err)
 
-	reader, err := cdnUnits.Buffer.NewReader(i)
+	reader, err := cdnUnits.Buffer.NewReader(*i)
 	require.NoError(t, err)
 
 	h, err := convergent.NewHash(reader)
 	require.NoError(t, err)
 	i.Hash = h
 
-	err = index.UpdateItem(ctx, m, db, &i)
+	err = index.UpdateItem(ctx, m, db, i)
+	require.NoError(t, err)
+
+	i, err = index.LoadItemByID(ctx, m, db, i.ID, gorpmapping.GetOptions.WithDecryption)
 	require.NoError(t, err)
 
 	var itemUnit = &storage.ItemUnit{
@@ -135,7 +139,7 @@ func TestRun(t *testing.T) {
 	localUnitDriver2 := cdnUnits.Storage(localUnit2.Name)
 	require.NotNil(t, localUnitDriver)
 
-	exists, err := localUnitDriver.ItemExists(i)
+	exists, err := localUnitDriver.ItemExists(*i)
 	require.NoError(t, err)
 	require.False(t, exists)
 

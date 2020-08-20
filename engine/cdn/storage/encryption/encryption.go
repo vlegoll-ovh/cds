@@ -1,6 +1,7 @@
 package encryption
 
 import (
+	"fmt"
 	"io"
 
 	"github.com/ovh/symmecrypt/convergent"
@@ -20,6 +21,7 @@ type ConvergentEncryption struct {
 
 func (s *ConvergentEncryption) getKey(h string) (convergent.Key, error) {
 	if s.k == nil {
+		fmt.Println(h)
 		k, err := convergent.NewKey(h, s.config...)
 		if err != nil {
 			return nil, sdk.WithStack(err)
