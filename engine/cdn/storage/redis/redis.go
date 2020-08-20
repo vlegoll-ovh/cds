@@ -43,6 +43,10 @@ func (s *Redis) Add(i index.Item, index uint, value string) error {
 	return s.store.ScoredSetAdd(context.Background(), i.ID, value, float64(index))
 }
 
+func (s *Redis) Append(i index.Item, value string) error {
+	return s.store.ScoredAppend(context.Background(), i.ID, value)
+}
+
 func (s *Redis) Get(i index.Item, from, to uint) ([]string, error) {
 	var res = make([]string, to-from+1)
 	err := s.store.ScoredSetScan(context.Background(), i.ID, float64(from), float64(to), &res)
@@ -53,6 +57,11 @@ func (s *Redis) Get(i index.Item, from, to uint) ([]string, error) {
 // with a score step of 100.0, starting at score 0
 func (s *Redis) NewReader(i index.Item) (io.ReadCloser, error) {
 	return &reader{s: s, i: i}, nil
+}
+
+func (s *Redis) Read(i index.Item, r io.Reader, w io.Writer) error {
+	_, err := io.Copy(w, r)
+	return err
 }
 
 type reader struct {
