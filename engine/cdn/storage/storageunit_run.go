@@ -52,7 +52,6 @@ func (x *RunningStorageUnits) Run(ctx context.Context, s StorageUnit) error {
 			tx.Rollback() // nolint
 			continue
 		}
-
 	}
 	return nil
 }

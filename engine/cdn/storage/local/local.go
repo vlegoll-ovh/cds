@@ -60,6 +60,7 @@ func (s *Local) NewWriter(i index.Item) (io.WriteCloser, error) {
 	}
 	return os.OpenFile(path, os.O_CREATE|os.O_RDWR, os.FileMode(0644))
 }
+
 func (s *Local) NewReader(i index.Item) (io.ReadCloser, error) {
 	// Open the file from the filesystem according to the locator
 	path, err := s.filename(i)
